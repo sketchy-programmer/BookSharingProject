@@ -5,7 +5,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import '../../styles/Login.css'; // Assuming you have a CSS file for styles
 
 // Custom logo component for Storyverse
-
 const StoryverseLogo = () => (
     <div className="logo-container">
         <svg width="80" height="80" viewBox="0 0 120 120" className="logo">
@@ -74,7 +73,13 @@ const Login = () => {
         try {
             const data = await loginUser(form);
             login(data);
-            navigate('/dashboard');
+            
+            // Role-based redirect
+            if (data.user && data.user.role === 'Writer') {
+                navigate('/writer-dashboard');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err) {
             setError('Invalid email or password. Please try again.');
         } finally {

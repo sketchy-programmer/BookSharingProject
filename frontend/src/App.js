@@ -8,6 +8,7 @@ import BookDetailPage from './pages/BookDetailPage';
 import ReadingPage from './pages/ReadingPage';
 import WriterDashboard from './pages/WriterDashBoard';
 import VolumeManager from './components/writing/VolumeManager';
+import Dashboard from './pages/Dashboard';
 
 function App() {
     return (
@@ -21,7 +22,8 @@ function App() {
                 <Route path="/read/:bookId" element={<ReadingPage />} />
                 <Route path="/write" element={<WritingPage />} />
                 <Route path="/write/manage/:bookId" element={<VolumeManager />} />
-                <Route path="/dashboard" element={<WriterDashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/writer-dashboard" element={<WriterDashboard />}/>
             </Routes>
         </Router>
     );
