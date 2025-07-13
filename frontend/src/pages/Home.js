@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import StoryverseFooter from '../components/common/Footer'; // Importing the footer component
 
 const StoryverseLogo = () => (
     <div className="logo-container">
@@ -430,6 +431,7 @@ const Home = () => {
                     }
                 }
             `}</style>
+            <StoryverseFooter />
         </div>
     );
 };

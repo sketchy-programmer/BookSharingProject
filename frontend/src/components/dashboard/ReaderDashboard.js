@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Search, 
@@ -20,6 +21,7 @@ import {
   LogOut,
   Bell
 } from 'lucide-react';
+import StoryverseFooter from '../common/Footer';
 
 const ReaderDashboard = () => {
   const [books, setBooks] = useState([]);
@@ -32,17 +34,132 @@ const ReaderDashboard = () => {
   const [readingList, setReadingList] = useState(new Set());
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock user data
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "Reader",
-    avatar: "/api/placeholder/40/40",
-    joinDate: "January 2024",
-    booksRead: 42,
-    favoriteGenres: ["Technology", "Sci-Fi", "Mystery"]
+  // Function to get user data from localStorage or API
+  const getUserData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        // Redirect to login if no token
+        window.location.href = '/login';
+        return;
+      }
+
+      // First, try to get user data from localStorage
+      const storedUserData = localStorage.getItem('user');
+      
+      if (storedUserData) {
+        try {
+          const userData = JSON.parse(storedUserData);
+          setUser({
+            name: userData.username || userData.name || "Unknown User",
+            email: userData.email || "No Email Provided",
+            role: userData.role || 'Reader',
+            avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || userData.name || 'User')}&background=3b82f6&color=fff`,
+            joinDate: userData.joinDate || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric'}),
+            booksRead: userData.booksRead || 0,
+            favoriteGenres: userData.favoriteGenres || ["Fantasy", "Sci-Fi", "Mystery"],
+          });
+        } catch (parseError) {
+          console.error("Error parsing stored user data:", parseError);
+          // If parsing fails, fetch from API
+          await fetchUserFromAPI(token);
+        }
+      } else {
+        // If no stored data, fetch from API
+        await fetchUserFromAPI(token);
+      }
+    } catch (error) {
+      console.error("Error in getUserData:", error);
+      setError("Failed to load user data");
+      
+      // Fallback to basic user info or redirect to login
+      const fallbackUser = {
+        name: "Unknown User",
+        email: "No Email Provided",
+        role: 'Reader',
+        avatar: `https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff`,
+        joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric'}),
+        booksRead: 0,
+        favoriteGenres: ["Fantasy", "Sci-Fi", "Mystery"]
+      };
+      setUser(fallbackUser);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Function to fetch user data from API
+  const fetchUserFromAPI = async (token) => {
+    try {
+      const response = await fetch('/api/user/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        const processedUser = {
+          name: userData.username || userData.name || "Unknown User",
+          email: userData.email || "No Email Provided",
+          role: userData.role || 'Reader',
+          avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || userData.name || 'User')}&background=3b82f6&color=fff`,
+          joinDate: userData.joinDate || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric'}),
+          booksRead: userData.booksRead || 0,
+          favoriteGenres: userData.favoriteGenres || ["Fantasy", "Sci-Fi", "Mystery"]
+        };
+        
+        setUser(processedUser);
+        
+        // Update localStorage with fresh data
+        localStorage.setItem('user', JSON.stringify(userData));
+      } else if (response.status === 401) {
+        // Token is invalid, clear storage and redirect to login
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      } else {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+    } catch (apiError) {
+      console.error("Error fetching user from API:", apiError);
+      throw apiError;
+    }
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  };
+
+  // Function to close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isProfileOpen && !event.target.closest('.profile-dropdown')) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileOpen]);
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   // Sample book data
   useEffect(() => {
@@ -260,22 +377,39 @@ const ReaderDashboard = () => {
           </div>
 
           {/* Profile Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
-            >
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-8 h-8 rounded-full border border-gray-300"
-              />
-              <span className="hidden md:block font-medium">{user.name}</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-
+          <div className="relative profile-dropdown">
+            {loading ? (
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+                <div className="hidden md:block w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            ) : user ? (
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full border border-gray-300"
+                  onError={(e) => {
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=3b82f6&color=fff`;
+                  }}
+                />
+                <span className="hidden md:block font-medium">{user.name}</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            ) : (
+              <button 
+                onClick={() => window.location.href = '/login'}
+                className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Login
+              </button>
+            )}
+            
             {/* Profile Dropdown Menu */}
-            {isProfileOpen && (
+            {isProfileOpen && user && (
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
                 <div className="px-4 py-3 border-b border-gray-200">
                   <div className="flex items-center space-x-3">
@@ -283,6 +417,9 @@ const ReaderDashboard = () => {
                       src={user.avatar}
                       alt={user.name}
                       className="w-12 h-12 rounded-full border border-gray-300"
+                      onError={(e) => {
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=3b82f6&color=fff`;
+                      }}
                     />
                     <div>
                       <p className="font-medium text-gray-900">{user.name}</p>
@@ -308,7 +445,7 @@ const ReaderDashboard = () => {
                   <div className="mt-3">
                     <p className="text-gray-500 text-sm mb-2">Favorite Genres</p>
                     <div className="flex flex-wrap gap-1">
-                      {user.favoriteGenres.map(genre => (
+                      {user.favoriteGenres && user.favoriteGenres.map(genre => (
                         <span key={genre} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
                           {genre}
                         </span>
@@ -322,10 +459,13 @@ const ReaderDashboard = () => {
                     <Settings className="w-4 h-4 mr-2" />
                     Account Settings
                   </a>
-                  <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
@@ -362,6 +502,15 @@ const ReaderDashboard = () => {
                 <Bell className="w-5 h-5 mr-2" />
                 Notifications
               </a>
+              {user && (
+                <button 
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md"
+                >
+                  <LogOut className="w-5 h-5 mr-2" />
+                  Sign Out
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -516,6 +665,27 @@ const ReaderDashboard = () => {
     </div>
   );
 
+  // Show error message if there's an error
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">
+            <User className="w-16 h-16 mx-auto" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Profile</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Bar */}
@@ -660,6 +830,7 @@ const ReaderDashboard = () => {
           </div>
         )}
       </div>
+      <StoryverseFooter />
     </div>
   );
 };

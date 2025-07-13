@@ -21,6 +21,7 @@ import {
   Bell,
   BookMarked
 } from 'lucide-react';
+import StoryverseFooter from '../common/Footer';
 
 const WriterDashboard = () => {
   const [form, setForm] = useState({ title: '', summary: '', genre: '' });
@@ -682,6 +683,7 @@ const WriterDashboard = () => {
           </div>
         </div>
       </div>
+      <StoryverseFooter />
     </div>
   );
 }
