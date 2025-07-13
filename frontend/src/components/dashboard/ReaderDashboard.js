@@ -11,7 +11,14 @@ import {
   Heart,
   BookMarked,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Menu,
+  X,
+  ChevronDown,
+  Home,
+  Settings,
+  LogOut,
+  Bell
 } from 'lucide-react';
 
 const ReaderDashboard = () => {
@@ -23,6 +30,19 @@ const ReaderDashboard = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [favorites, setFavorites] = useState(new Set());
   const [readingList, setReadingList] = useState(new Set());
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  // Mock user data
+  const user = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    role: "Reader",
+    avatar: "/api/placeholder/40/40",
+    joinDate: "January 2024",
+    booksRead: 42,
+    favoriteGenres: ["Technology", "Sci-Fi", "Mystery"]
+  };
 
   // Sample book data
   useEffect(() => {
@@ -205,6 +225,150 @@ const ReaderDashboard = () => {
     return stars;
   };
 
+  const NavigationBar = () => (
+    <nav className="bg-white shadow-lg border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo and Brand */}
+          <div className="flex items-center">
+            <BookOpen className="w-8 h-8 text-blue-600 mr-2" />
+            <span className="text-xl font-bold text-gray-900">BookHub</span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <a href="#" className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+              <Home className="w-5 h-5 mr-1" />
+              Dashboard
+            </a>
+            <a href="#" className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+              <Heart className="w-5 h-5 mr-1" />
+              Favorites
+            </a>
+            <a href="#" className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+              <BookMarked className="w-5 h-5 mr-1" />
+              Reading List
+            </a>
+            
+            {/* Notifications */}
+            <button className="relative text-gray-700 hover:text-blue-600 transition-colors">
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                3
+              </span>
+            </button>
+          </div>
+
+          {/* Profile Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
+            >
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-8 h-8 rounded-full border border-gray-300"
+              />
+              <span className="hidden md:block font-medium">{user.name}</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+
+            {/* Profile Dropdown Menu */}
+            {isProfileOpen && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                <div className="px-4 py-3 border-b border-gray-200">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full border border-gray-300"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-900">{user.name}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mt-1">
+                        {user.role}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="px-4 py-3 border-b border-gray-200">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-500">Member Since</p>
+                      <p className="font-medium text-gray-900">{user.joinDate}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Books Read</p>
+                      <p className="font-medium text-gray-900">{user.booksRead}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <p className="text-gray-500 text-sm mb-2">Favorite Genres</p>
+                    <div className="flex flex-wrap gap-1">
+                      {user.favoriteGenres.map(genre => (
+                        <span key={genre} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="py-1">
+                  <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Account Settings
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-gray-700 hover:text-blue-600 transition-colors"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-gray-200">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <a href="#" className="flex items-center px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md">
+                <Home className="w-5 h-5 mr-2" />
+                Dashboard
+              </a>
+              <a href="#" className="flex items-center px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md">
+                <Heart className="w-5 h-5 mr-2" />
+                Favorites
+              </a>
+              <a href="#" className="flex items-center px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md">
+                <BookMarked className="w-5 h-5 mr-2" />
+                Reading List
+              </a>
+              <a href="#" className="flex items-center px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md">
+                <Bell className="w-5 h-5 mr-2" />
+                Notifications
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+
   const BookCard = ({ book }) => (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="relative">
@@ -354,6 +518,9 @@ const ReaderDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Navigation Bar */}
+      <NavigationBar />
+      
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
