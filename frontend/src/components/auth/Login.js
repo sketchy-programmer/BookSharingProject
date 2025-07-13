@@ -56,7 +56,7 @@ const Login = () => {
             login(data);
             
             // Role-based redirect
-            if (data.user && data.user.role === 'Writer') {
+            if (data.role === 'Writer') {
                 navigate('/writer-dashboard');
             } else {
                 navigate('/dashboard');
