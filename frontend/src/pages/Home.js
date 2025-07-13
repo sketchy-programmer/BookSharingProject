@@ -3,15 +3,10 @@ import { useState } from 'react';
 const StoryverseLogo = () => (
     <div className="logo-container">
         <svg width="120" height="120" viewBox="0 0 120 120" className="logo">
-            {/* Background Circle with Gradient */}
             <defs>
                 <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#667eea" />
-                    <stop offset="100%" stopColor="#764ba2" />
-                </linearGradient>
-                <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#f093fb" />
-                    <stop offset="100%" stopColor="#f5576c" />
+                    <stop offset="0%" stopColor="#3b82f6" />
+                    <stop offset="100%" stopColor="#1e40af" />
                 </linearGradient>
                 <filter id="glow">
                     <feGaussianBlur stdDeviation="3" result="coloredBlur" />
@@ -33,30 +28,30 @@ const StoryverseLogo = () => (
                     fill="white" opacity="0.9" />
 
                 {/* Book Spine */}
-                <rect x="58" y="40" width="4" height="40" fill="url(#bookGradient)" />
+                <rect x="58" y="40" width="4" height="40" fill="#1e40af" />
 
                 {/* Text Lines on Pages */}
-                <line x1="40" y1="50" x2="52" y2="50" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="40" y1="55" x2="50" y2="55" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="40" y1="60" x2="52" y2="60" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
+                <line x1="40" y1="50" x2="52" y2="50" stroke="#3b82f6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="40" y1="55" x2="50" y2="55" stroke="#3b82f6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="40" y1="60" x2="52" y2="60" stroke="#3b82f6" strokeWidth="1.5" opacity="0.6" />
 
-                <line x1="68" y1="50" x2="80" y2="50" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="68" y1="55" x2="78" y2="55" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="68" y1="60" x2="80" y2="60" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
+                <line x1="68" y1="50" x2="80" y2="50" stroke="#3b82f6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="68" y1="55" x2="78" y2="55" stroke="#3b82f6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="68" y1="60" x2="80" y2="60" stroke="#3b82f6" strokeWidth="1.5" opacity="0.6" />
             </g>
 
             {/* Floating Stars/Sparkles */}
             <g className="sparkles">
-                <circle cx="25" cy="30" r="2" fill="#f093fb" opacity="0.8">
+                <circle cx="25" cy="30" r="2" fill="#60a5fa" opacity="0.8">
                     <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite" />
                 </circle>
-                <circle cx="95" cy="35" r="1.5" fill="#667eea" opacity="0.6">
+                <circle cx="95" cy="35" r="1.5" fill="#3b82f6" opacity="0.6">
                     <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1.5s" repeatCount="indefinite" />
                 </circle>
-                <circle cx="20" cy="85" r="1.5" fill="#f5576c" opacity="0.7">
+                <circle cx="20" cy="85" r="1.5" fill="#1e40af" opacity="0.7">
                     <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.5s" repeatCount="indefinite" />
                 </circle>
-                <circle cx="90" cy="90" r="2" fill="#764ba2" opacity="0.5">
+                <circle cx="90" cy="90" r="2" fill="#60a5fa" opacity="0.5">
                     <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3s" repeatCount="indefinite" />
                 </circle>
             </g>
@@ -141,7 +136,7 @@ const Home = () => {
             <style jsx>{`
                 .home {
                     min-height: 100vh;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    background: #f9fafb;
                     position: relative;
                     overflow-x: hidden;
                 }
@@ -155,6 +150,7 @@ const Home = () => {
                     padding: 2rem;
                     position: relative;
                     text-align: center;
+                    background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
                 }
 
                 .hero-content {
@@ -168,7 +164,7 @@ const Home = () => {
                 }
 
                 .logo {
-                    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+                    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
                     transition: transform 0.3s ease;
                 }
 
@@ -202,29 +198,26 @@ const Home = () => {
                 .hero-title {
                     font-size: 3.5rem;
                     font-weight: 800;
-                    color: white;
+                    color: #1f2937;
                     margin-bottom: 1rem;
-                    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     animation: slideInUp 1s ease-out;
                 }
 
                 .brand-name {
-                    background: linear-gradient(45deg, #f093fb, #f5576c);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
+                    color: #3b82f6;
                 }
 
                 .hero-subtitle {
                     font-size: 1.3rem;
-                    color: rgba(255,255,255,0.9);
+                    color: #6b7280;
                     margin-bottom: 3rem;
                     line-height: 1.6;
                     animation: slideInUp 1s ease-out 0.2s both;
                 }
 
                 .highlight {
-                    color: #f093fb;
+                    color: #1e40af;
                     font-weight: 600;
                 }
 
@@ -241,7 +234,7 @@ const Home = () => {
                     font-size: 1.1rem;
                     font-weight: 600;
                     border: none;
-                    border-radius: 50px;
+                    border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     text-decoration: none;
@@ -251,27 +244,29 @@ const Home = () => {
                 }
 
                 .btn-primary {
-                    background: linear-gradient(45deg, #f093fb, #f5576c);
+                    background: #3b82f6;
                     color: white;
-                    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+                    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
                 }
 
                 .btn-primary:hover {
+                    background: #1e40af;
                     transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
+                    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
                 }
 
                 .btn-secondary {
-                    background: rgba(255,255,255,0.15);
-                    color: white;
-                    border: 2px solid rgba(255,255,255,0.3);
-                    backdrop-filter: blur(10px);
+                    background: white;
+                    color: #3b82f6;
+                    border: 2px solid #3b82f6;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                 }
 
                 .btn-secondary:hover {
-                    background: rgba(255,255,255,0.25);
+                    background: #3b82f6;
+                    color: white;
                     transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(255,255,255,0.2);
+                    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
                 }
 
                 .floating-elements {
@@ -287,7 +282,7 @@ const Home = () => {
                 .floating-book {
                     position: absolute;
                     font-size: 2rem;
-                    opacity: 0.6;
+                    opacity: 0.3;
                     animation: floatRandom 6s ease-in-out infinite;
                 }
 
@@ -324,14 +319,14 @@ const Home = () => {
 
                 .features-section {
                     padding: 5rem 2rem;
-                    background: rgba(255,255,255,0.05);
-                    backdrop-filter: blur(10px);
+                    background: white;
+                    border-top: 1px solid #e5e7eb;
                 }
 
                 .section-title {
                     text-align: center;
                     font-size: 2.5rem;
-                    color: white;
+                    color: #1f2937;
                     margin-bottom: 3rem;
                     font-weight: 700;
                 }
@@ -345,20 +340,20 @@ const Home = () => {
                 }
 
                 .feature-card {
-                    background: rgba(255,255,255,0.1);
-                    backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255,255,255,0.2);
-                    border-radius: 20px;
+                    background: white;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
                     padding: 2rem;
                     text-align: center;
                     transition: all 0.3s ease;
                     animation: slideInUp 0.8s ease-out both;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
                 }
 
                 .feature-card:hover {
-                    transform: translateY(-10px);
-                    background: rgba(255,255,255,0.15);
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+                    transform: translateY(-5px);
+                    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+                    border-color: #3b82f6;
                 }
 
                 .feature-icon {
@@ -367,14 +362,14 @@ const Home = () => {
                 }
 
                 .feature-card h3 {
-                    color: white;
+                    color: #1f2937;
                     font-size: 1.3rem;
                     margin-bottom: 1rem;
                     font-weight: 600;
                 }
 
                 .feature-card p {
-                    color: rgba(255,255,255,0.8);
+                    color: #6b7280;
                     line-height: 1.6;
                     font-size: 0.95rem;
                 }

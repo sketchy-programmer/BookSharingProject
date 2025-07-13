@@ -1,549 +1,371 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createBook } from '../../services/bookService';
+import React, { useState } from 'react';
+import { 
+  PenTool, 
+  BookOpen, 
+  Upload, 
+  Sparkles,
+  User,
+  Calendar,
+  Tag,
+  FileText,
+  Star,
+  TrendingUp,
+  Eye,
+  Heart
+} from 'lucide-react';
 
-const WritingLogo = () => (
-    <div className="writing-logo-container">
-        <svg width="100" height="100" viewBox="0 0 100 100" className="writing-logo">
-            <defs>
-                <linearGradient id="penGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#f093fb" />
-                    <stop offset="100%" stopColor="#f5576c" />
-                </linearGradient>
-                <linearGradient id="paperGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#f8f9fa" />
-                </linearGradient>
-            </defs>
+const WriterDashboard = () => {
+  const [form, setForm] = useState({ title: '', summary: '', genre: '' });
+  const [coverImage, setCoverImage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-            {/* Paper Background */}
-            <rect x="20" y="15" width="60" height="70" rx="5" fill="url(#paperGradient)" 
-                  stroke="#e9ecef" strokeWidth="2" className="paper-bg" />
-            
-            {/* Paper Lines */}
-            <line x1="25" y1="25" x2="75" y2="25" stroke="#dee2e6" strokeWidth="1" opacity="0.5" />
-            <line x1="25" y1="35" x2="70" y2="35" stroke="#dee2e6" strokeWidth="1" opacity="0.5" />
-            <line x1="25" y1="45" x2="75" y2="45" stroke="#dee2e6" strokeWidth="1" opacity="0.5" />
-            <line x1="25" y1="55" x2="65" y2="55" stroke="#dee2e6" strokeWidth="1" opacity="0.5" />
-            
-            {/* Writing on Paper */}
-            <line x1="25" y1="25" x2="50" y2="25" stroke="url(#penGradient)" strokeWidth="2" opacity="0.8" />
-            <line x1="25" y1="35" x2="45" y2="35" stroke="url(#penGradient)" strokeWidth="2" opacity="0.8" />
-            <line x1="25" y1="45" x2="55" y2="45" stroke="url(#penGradient)" strokeWidth="2" opacity="0.8" />
-            
-            {/* Fountain Pen */}
-            <g className="pen-container">
-                <rect x="60" y="50" width="25" height="3" rx="1.5" fill="url(#penGradient)" 
-                      transform="rotate(45 72.5 51.5)" />
-                <circle cx="58" cy="52" r="2" fill="#f5576c" />
-                <path d="M56 54 L54 56 L55 57 L57 55 Z" fill="url(#penGradient)" />
-            </g>
-            
-            {/* Sparkles */}
-            <circle cx="15" cy="20" r="1.5" fill="#f093fb" opacity="0.8">
-                <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="85" cy="30" r="1" fill="#667eea" opacity="0.6">
-                <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1.5s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="90" cy="70" r="1.5" fill="#f5576c" opacity="0.7">
-                <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.5s" repeatCount="indefinite" />
-            </circle>
-        </svg>
-    </div>
-);
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleFileChange = e => setCoverImage(e.target.files[0]);
 
-const Dashboard = () => {
-    const [form, setForm] = useState({ title: '', summary: '', genre: '' });
-    const [coverImage, setCoverImage] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const navigate = useNavigate();
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      alert('Book created successfully!');
+      setForm({ title: '', summary: '', genre: '' });
+      setCoverImage(null);
+      setIsSubmitting(false);
+    }, 2000);
+  };
 
-    const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
-    const handleFileChange = e => setCoverImage(e.target.files[0]);
+  // Mock data for writer stats
+  const writerStats = {
+    totalBooks: 12,
+    totalViews: 15420,
+    totalLikes: 892,
+    avgRating: 4.6
+  };
 
-    const handleSubmit = async e => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        
-        const formData = new FormData();
-        for (let key in form) formData.append(key, form[key]);
-        if (coverImage) formData.append('coverImage', coverImage);
+  const recentBooks = [
+    {
+      id: 1,
+      title: "The Digital Renaissance",
+      genre: "Technology",
+      status: "Published",
+      views: 2340,
+      likes: 156,
+      rating: 4.5,
+      publishedDate: "2024-01-15"
+    },
+    {
+      id: 2,
+      title: "Whispers in the Wind",
+      genre: "Romance",
+      status: "Published",
+      views: 1890,
+      likes: 98,
+      rating: 4.2,
+      publishedDate: "2024-02-20"
+    },
+    {
+      id: 3,
+      title: "Code Warriors",
+      genre: "Technology",
+      status: "Draft",
+      views: 0,
+      likes: 0,
+      rating: 0,
+      publishedDate: null
+    }
+  ];
 
-        try {
-            const book = await createBook(formData);
-            navigate(`/books/${book._id}`);
-        } catch (err) {
-            alert('Error creating book');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
 
-    return (
-        <div className="writing-page">
-            {/* Hero Section */}
-            <div className="writing-hero">
-                <div className="writing-hero-content">
-                    <WritingLogo />
-                    <h1 className="writing-title">
-                        Create Your <span className="brand-name">Masterpiece</span>
-                    </h1>
-                    <p className="writing-subtitle">
-                        Transform your ideas into <span className="highlight">extraordinary stories</span>
-                    </p>
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />);
+    }
+
+    if (hasHalfStar) {
+      stars.push(<Star key="half" className="w-4 h-4 fill-yellow-400 text-yellow-400 opacity-50" />);
+    }
+
+    const remainingStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < remainingStars; i++) {
+      stars.push(<Star key={`empty-${i}`} className="w-4 h-4 text-gray-300" />);
+    }
+
+    return stars;
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Writer Dashboard</h1>
+              <p className="mt-1 text-sm text-gray-600">
+                Create and manage your literary masterpieces
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                {writerStats.totalBooks} Books Created
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center">
+              <BookOpen className="w-8 h-8 text-blue-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Books</p>
+                <p className="text-2xl font-bold text-gray-900">{writerStats.totalBooks}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center">
+              <Eye className="w-8 h-8 text-green-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Views</p>
+                <p className="text-2xl font-bold text-gray-900">{writerStats.totalViews.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center">
+              <Heart className="w-8 h-8 text-red-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Likes</p>
+                <p className="text-2xl font-bold text-gray-900">{writerStats.totalLikes}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center">
+              <Star className="w-8 h-8 text-yellow-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Avg Rating</p>
+                <p className="text-2xl font-bold text-gray-900">{writerStats.avgRating}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Create New Book Form */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center">
+                  <PenTool className="w-6 h-6 text-blue-500 mr-2" />
+                  <h2 className="text-xl font-semibold text-gray-900">Create New Book</h2>
+                </div>
+              </div>
+              
+              <div onSubmit={handleSubmit} className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                      Book Title
+                    </label>
+                    <input
+                      id="title"
+                      name="title"
+                      type="text"
+                      placeholder="Enter your book title..."
+                      value={form.title}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-2">
+                      Genre
+                    </label>
+                    <input
+                      id="genre"
+                      name="genre"
+                      type="text"
+                      placeholder="Fantasy, Romance, Mystery..."
+                      value={form.genre}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="summary" className="block text-sm font-medium text-gray-700 mb-2">
+                      Book Summary
+                    </label>
+                    <textarea
+                      id="summary"
+                      name="summary"
+                      placeholder="Tell readers what your story is about..."
+                      value={form.summary}
+                      onChange={handleChange}
+                      rows="4"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="cover" className="block text-sm font-medium text-gray-700 mb-2">
+                      Cover Image
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="cover"
+                        type="file"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        accept="image/*"
+                        required
+                      />
+                      <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center hover:border-blue-500 transition-colors">
+                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-sm text-gray-600">
+                          {coverImage ? coverImage.name : 'Click to upload cover image'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="button"
+                    onClick={handleSubmit}
+                    className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Create Book
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Books */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center">
+                  <BookOpen className="w-6 h-6 text-green-500 mr-2" />
+                  <h2 className="text-xl font-semibold text-gray-900">Recent Books</h2>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="space-y-4">
+                  {recentBooks.map(book => (
+                    <div key={book.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-medium text-gray-900 text-sm line-clamp-1">{book.title}</h3>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          book.status === 'Published' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {book.status}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center text-xs text-gray-500 mb-2">
+                        <Tag className="w-3 h-3 mr-1" />
+                        {book.genre}
+                      </div>
+                      
+                      {book.status === 'Published' && (
+                        <>
+                          <div className="flex items-center mb-2">
+                            {renderStars(book.rating)}
+                            <span className="ml-2 text-xs text-gray-600">{book.rating}</span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <span className="flex items-center">
+                              <Eye className="w-3 h-3 mr-1" />
+                              {book.views}
+                            </span>
+                            <span className="flex items-center">
+                              <Heart className="w-3 h-3 mr-1" />
+                              {book.likes}
+                            </span>
+                          </div>
+                          
+                          {book.publishedDate && (
+                            <div className="flex items-center text-xs text-gray-500 mt-2">
+                              <Calendar className="w-3 h-3 mr-1" />
+                              {new Date(book.publishedDate).toLocaleDateString()}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  ))}
                 </div>
                 
-                {/* Floating Writing Elements */}
-                <div className="floating-elements">
-                    <div className="floating-element floating-1">✍️</div>
-                    <div className="floating-element floating-2">📝</div>
-                    <div className="floating-element floating-3">💡</div>
-                    <div className="floating-element floating-4">🎨</div>
-                    <div className="floating-element floating-5">📖</div>
-                </div>
+                <button className="w-full mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  View All Books
+                </button>
+              </div>
             </div>
-
-            {/* Book Creator Form */}
-            <div className="creator-section">
-                <div className="creator-container">
-                    <h2 className="creator-title">Bring Your Story to Life</h2>
-                    
-                    <form onSubmit={handleSubmit} className="creator-form">
-                        <div className="form-group">
-                            <label htmlFor="title" className="form-label">Book Title</label>
-                            <input
-                                id="title"
-                                name="title"
-                                type="text"
-                                placeholder="Enter your book title..."
-                                value={form.title}
-                                onChange={handleChange}
-                                className="form-input"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="genre" className="form-label">Genre</label>
-                            <input
-                                id="genre"
-                                name="genre"
-                                type="text"
-                                placeholder="Fantasy, Romance, Mystery..."
-                                value={form.genre}
-                                onChange={handleChange}
-                                className="form-input"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="summary" className="form-label">Book Summary</label>
-                            <textarea
-                                id="summary"
-                                name="summary"
-                                placeholder="Tell readers what your story is about..."
-                                value={form.summary}
-                                onChange={handleChange}
-                                className="form-textarea"
-                                rows="4"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="cover" className="form-label">Cover Image</label>
-                            <div className="file-upload-wrapper">
-                                <input
-                                    id="cover"
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    className="file-input"
-                                    accept="image/*"
-                                    required
-                                />
-                                <label htmlFor="cover" className="file-label">
-                                    <span className="file-icon">📁</span>
-                                    {coverImage ? coverImage.name : 'Choose cover image'}
-                                </label>
-                            </div>
-                        </div>
-
-                        <button 
-                            type="submit" 
-                            className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <span className="spinner"></span>
-                                    Creating...
-                                </>
-                            ) : (
-                                <>
-                                    <span className="btn-icon">✨</span>
-                                    Create Book
-                                </>
-                            )}
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <style jsx>{`
-                .writing-page {
-                    min-height: 100vh;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    position: relative;
-                    overflow-x: hidden;
-                }
-
-                .writing-hero {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    min-height: 60vh;
-                    padding: 2rem;
-                    position: relative;
-                    text-align: center;
-                }
-
-                .writing-hero-content {
-                    z-index: 2;
-                    max-width: 800px;
-                }
-
-                .writing-logo-container {
-                    margin-bottom: 2rem;
-                    animation: float 3s ease-in-out infinite;
-                }
-
-                .writing-logo {
-                    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
-                    transition: transform 0.3s ease;
-                }
-
-                .writing-logo:hover {
-                    transform: scale(1.05);
-                }
-
-                .paper-bg {
-                    animation: paperFloat 2s ease-in-out infinite alternate;
-                }
-
-                .pen-container {
-                    animation: penWrite 3s ease-in-out infinite;
-                }
-
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px); }
-                    50% { transform: translateY(-10px); }
-                }
-
-                @keyframes paperFloat {
-                    0% { transform: translateY(0px); }
-                    100% { transform: translateY(-2px); }
-                }
-
-                @keyframes penWrite {
-                    0%, 100% { transform: translateX(0px); }
-                    50% { transform: translateX(-2px); }
-                }
-
-                .writing-title {
-                    font-size: 3rem;
-                    font-weight: 800;
-                    color: white;
-                    margin-bottom: 1rem;
-                    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-                    animation: slideInUp 1s ease-out;
-                }
-
-                .brand-name {
-                    background: linear-gradient(45deg, #f093fb, #f5576c);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
-
-                .writing-subtitle {
-                    font-size: 1.2rem;
-                    color: rgba(255,255,255,0.9);
-                    margin-bottom: 2rem;
-                    line-height: 1.6;
-                    animation: slideInUp 1s ease-out 0.2s both;
-                }
-
-                .highlight {
-                    color: #f093fb;
-                    font-weight: 600;
-                }
-
-                .floating-elements {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    pointer-events: none;
-                    z-index: 1;
-                }
-
-                .floating-element {
-                    position: absolute;
-                    font-size: 1.5rem;
-                    opacity: 0.4;
-                    animation: floatRandom 6s ease-in-out infinite;
-                }
-
-                .floating-1 {
-                    top: 15%;
-                    left: 10%;
-                    animation-delay: 0s;
-                }
-
-                .floating-2 {
-                    top: 25%;
-                    right: 15%;
-                    animation-delay: 1s;
-                }
-
-                .floating-3 {
-                    top: 35%;
-                    left: 20%;
-                    animation-delay: 2s;
-                }
-
-                .floating-4 {
-                    top: 45%;
-                    right: 20%;
-                    animation-delay: 3s;
-                }
-
-                .floating-5 {
-                    top: 55%;
-                    left: 15%;
-                    animation-delay: 4s;
-                }
-
-                @keyframes floatRandom {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); }
-                    25% { transform: translateY(-15px) rotate(3deg); }
-                    50% { transform: translateY(-8px) rotate(-3deg); }
-                    75% { transform: translateY(-20px) rotate(2deg); }
-                }
-
-                .creator-section {
-                    background: rgba(255,255,255,0.05);
-                    backdrop-filter: blur(10px);
-                    padding: 4rem 2rem;
-                    position: relative;
-                }
-
-                .creator-container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                }
-
-                .creator-title {
-                    text-align: center;
-                    font-size: 2.2rem;
-                    color: white;
-                    margin-bottom: 3rem;
-                    font-weight: 700;
-                    animation: slideInUp 0.8s ease-out;
-                }
-
-                .creator-form {
-                    background: rgba(255,255,255,0.1);
-                    backdrop-filter: blur(15px);
-                    border: 1px solid rgba(255,255,255,0.2);
-                    border-radius: 20px;
-                    padding: 2.5rem;
-                    animation: slideInUp 0.8s ease-out 0.2s both;
-                }
-
-                .form-group {
-                    margin-bottom: 2rem;
-                }
-
-                .form-label {
-                    display: block;
-                    color: white;
-                    font-weight: 600;
-                    margin-bottom: 0.5rem;
-                    font-size: 1rem;
-                }
-
-                .form-input, .form-textarea {
-                    width: 100%;
-                    padding: 1rem 1.5rem;
-                    border: 2px solid rgba(255,255,255,0.2);
-                    border-radius: 15px;
-                    background: rgba(255,255,255,0.1);
-                    color: white;
-                    font-size: 1rem;
-                    transition: all 0.3s ease;
-                    backdrop-filter: blur(10px);
-                }
-
-                .form-input:focus, .form-textarea:focus {
-                    outline: none;
-                    border-color: #f093fb;
-                    background: rgba(255,255,255,0.15);
-                    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
-                }
-
-                .form-input::placeholder, .form-textarea::placeholder {
-                    color: rgba(255,255,255,0.6);
-                }
-
-                .form-textarea {
-                    resize: vertical;
-                    min-height: 120px;
-                }
-
-                .file-upload-wrapper {
-                    position: relative;
-                }
-
-                .file-input {
-                    position: absolute;
-                    opacity: 0;
-                    width: 100%;
-                    height: 100%;
-                    cursor: pointer;
-                }
-
-                .file-label {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    padding: 1rem 1.5rem;
-                    border: 2px dashed rgba(255,255,255,0.3);
-                    border-radius: 15px;
-                    background: rgba(255,255,255,0.05);
-                    color: rgba(255,255,255,0.8);
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    backdrop-filter: blur(10px);
-                }
-
-                .file-label:hover {
-                    border-color: #f093fb;
-                    background: rgba(255,255,255,0.1);
-                }
-
-                .file-icon {
-                    font-size: 1.2rem;
-                }
-
-                .submit-btn {
-                    width: 100%;
-                    padding: 1.2rem 2rem;
-                    border: none;
-                    border-radius: 15px;
-                    background: linear-gradient(45deg, #f093fb, #f5576c);
-                    color: white;
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.5rem;
-                    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
-                }
-
-                .submit-btn:hover:not(:disabled) {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
-                }
-
-                .submit-btn:disabled {
-                    opacity: 0.7;
-                    cursor: not-allowed;
-                }
-
-                .submit-btn.submitting {
-                    background: linear-gradient(45deg, #c471d1, #d14b64);
-                }
-
-                .btn-icon {
-                    font-size: 1.1rem;
-                }
-
-                .spinner {
-                    width: 18px;
-                    height: 18px;
-                    border: 2px solid rgba(255,255,255,0.3);
-                    border-top: 2px solid white;
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                }
-
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-
-                @keyframes slideInUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(30px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                /* Responsive Design */
-                @media (max-width: 768px) {
-                    .writing-title {
-                        font-size: 2.2rem;
-                    }
-
-                    .writing-subtitle {
-                        font-size: 1.1rem;
-                        padding: 0 1rem;
-                    }
-
-                    .creator-form {
-                        padding: 2rem;
-                    }
-
-                    .creator-title {
-                        font-size: 1.8rem;
-                    }
-
-                    .floating-element {
-                        font-size: 1.2rem;
-                    }
-                }
-
-                @media (max-width: 480px) {
-                    .writing-title {
-                        font-size: 1.8rem;
-                    }
-
-                    .writing-logo {
-                        width: 80px;
-                        height: 80px;
-                    }
-
-                    .creator-form {
-                        padding: 1.5rem;
-                    }
-
-                    .form-input, .form-textarea {
-                        padding: 0.8rem 1rem;
-                    }
-                }
-            `}</style>
+          </div>
         </div>
-    );
+
+        {/* Writing Tips Section */}
+        <div className="mt-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center mb-4">
+              <FileText className="w-6 h-6 text-purple-500 mr-2" />
+              <h2 className="text-xl font-semibold text-gray-900">Writing Tips</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-blue-50 rounded-lg p-4">
+                <h3 className="font-medium text-blue-900 mb-2">Engaging Titles</h3>
+                <p className="text-sm text-blue-700">
+                  Create titles that spark curiosity and give readers a hint of what's to come.
+                </p>
+              </div>
+              
+              <div className="bg-green-50 rounded-lg p-4">
+                <h3 className="font-medium text-green-900 mb-2">Compelling Summaries</h3>
+                <p className="text-sm text-green-700">
+                  Write summaries that hook readers without giving away too much of the plot.
+                </p>
+              </div>
+              
+              <div className="bg-purple-50 rounded-lg p-4">
+                <h3 className="font-medium text-purple-900 mb-2">Eye-catching Covers</h3>
+                <p className="text-sm text-purple-700">
+                  Choose covers that represent your story's mood and appeal to your target audience.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default Dashboard;
+export default WriterDashboard;

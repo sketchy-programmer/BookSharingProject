@@ -10,12 +10,8 @@ const StoryverseLogo = () => (
         <svg width="80" height="80" viewBox="0 0 120 120" className="logo">
             <defs>
                 <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#667eea" />
-                    <stop offset="100%" stopColor="#764ba2" />
-                </linearGradient>
-                <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#f093fb" />
-                    <stop offset="100%" stopColor="#f5576c" />
+                    <stop offset="0%" stopColor="#3B82F6" />
+                    <stop offset="100%" stopColor="#1E40AF" />
                 </linearGradient>
             </defs>
 
@@ -26,28 +22,13 @@ const StoryverseLogo = () => (
                     fill="white" opacity="0.9" />
                 <path d="M60 45 L60 75 Q60 80 65 80 L80 80 Q85 80 85 75 L85 45 Q85 40 80 40 L65 40 Q60 40 60 45 Z"
                     fill="white" opacity="0.9" />
-                <rect x="58" y="40" width="4" height="40" fill="url(#bookGradient)" />
-                <line x1="40" y1="50" x2="52" y2="50" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="40" y1="55" x2="50" y2="55" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="40" y1="60" x2="52" y2="60" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="68" y1="50" x2="80" y2="50" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="68" y1="55" x2="78" y2="55" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-                <line x1="68" y1="60" x2="80" y2="60" stroke="#667eea" strokeWidth="1.5" opacity="0.6" />
-            </g>
-
-            <g className="sparkles">
-                <circle cx="25" cy="30" r="2" fill="#f093fb" opacity="0.8">
-                    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="95" cy="35" r="1.5" fill="#667eea" opacity="0.6">
-                    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1.5s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="20" cy="85" r="1.5" fill="#f5576c" opacity="0.7">
-                    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.5s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="90" cy="90" r="2" fill="#764ba2" opacity="0.5">
-                    <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3s" repeatCount="indefinite" />
-                </circle>
+                <rect x="58" y="40" width="4" height="40" fill="#1E40AF" />
+                <line x1="40" y1="50" x2="52" y2="50" stroke="#3B82F6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="40" y1="55" x2="50" y2="55" stroke="#3B82F6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="40" y1="60" x2="52" y2="60" stroke="#3B82F6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="68" y1="50" x2="80" y2="50" stroke="#3B82F6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="68" y1="55" x2="78" y2="55" stroke="#3B82F6" strokeWidth="1.5" opacity="0.6" />
+                <line x1="68" y1="60" x2="80" y2="60" stroke="#3B82F6" strokeWidth="1.5" opacity="0.6" />
             </g>
         </svg>
     </div>
@@ -98,7 +79,7 @@ const Login = () => {
                     </h1>
 
                     <p className="login-subtitle">
-                        Continue your <span className="highlight">storytelling journey</span>
+                        Continue your storytelling journey
                     </p>
 
                     <form onSubmit={handleSubmit} className="login-form">
@@ -166,335 +147,259 @@ const Login = () => {
                 </div>
             </div>
 
-            {/* Floating Elements */}
-            <div className="floating-elements">
-                <div className="floating-book floating-1">📖</div>
-                <div className="floating-book floating-2">✨</div>
-                <div className="floating-book floating-3">📚</div>
-                <div className="floating-book floating-4">🖋️</div>
-            </div>
-
             <style jsx>{`
-                // .login-page {
-                //     min-height: 100vh;
-                //     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                //     display: flex;
-                //     align-items: center;
-                //     justify-content: center;
-                //     padding: 2rem;
-                //     position: relative;
-                //     overflow: hidden;
-                // }
+                .login-page {
+                    min-height: 100vh;
+                    background-color: #F9FAFB;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem;
+                }
 
-                // .login-container {
-                //     z-index: 2;
-                //     width: 100%;
-                //     max-width: 400px;
-                //     animation: slideInUp 0.8s ease-out;
-                // }
+                .login-container {
+                    width: 100%;
+                    max-width: 400px;
+                    animation: slideInUp 0.8s ease-out;
+                }
 
-                // .login-card {
-                //     background: rgba(255, 255, 255, 0.1);
-                //     backdrop-filter: blur(20px);
-                //     border: 1px solid rgba(255, 255, 255, 0.2);
-                //     border-radius: 24px;
-                //     padding: 2.5rem;
-                //     text-align: center;
-                //     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-                //     transition: all 0.3s ease;
-                // }
+                .login-card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2.5rem;
+                    text-align: center;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    border: 1px solid #E5E7EB;
+                    transition: all 0.3s ease;
+                }
 
-                // .login-card:hover {
-                //     transform: translateY(-5px);
-                //     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-                // }
+                .login-card:hover {
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                }
 
-                // .logo-container {
-                //     margin-bottom: 1.5rem;
-                //     animation: float 3s ease-in-out infinite;
-                // }
+                .logo-container {
+                    margin-bottom: 1.5rem;
+                    animation: float 3s ease-in-out infinite;
+                }
 
-                // .logo {
-                //     filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
-                //     transition: transform 0.3s ease;
-                // }
+                .logo {
+                    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+                    transition: transform 0.3s ease;
+                }
 
-                // .logo:hover {
-                //     transform: scale(1.05);
-                // }
+                .logo:hover {
+                    transform: scale(1.05);
+                }
 
-                // .logo-bg {
-                //     animation: pulse 4s ease-in-out infinite;
-                // }
+                .logo-bg {
+                    animation: pulse 4s ease-in-out infinite;
+                }
 
-                // .book-container {
-                //     animation: bookFloat 2s ease-in-out infinite alternate;
-                // }
+                .book-container {
+                    animation: bookFloat 2s ease-in-out infinite alternate;
+                }
 
-                // @keyframes float {
-                //     0%, 100% { transform: translateY(0px); }
-                //     50% { transform: translateY(-8px); }
-                // }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-8px); }
+                }
 
-                // @keyframes pulse {
-                //     0%, 100% { transform: scale(1); }
-                //     50% { transform: scale(1.05); }
-                // }
+                @keyframes pulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
 
-                // @keyframes bookFloat {
-                //     0% { transform: translateY(0px); }
-                //     100% { transform: translateY(-2px); }
-                // }
+                @keyframes bookFloat {
+                    0% { transform: translateY(0px); }
+                    100% { transform: translateY(-2px); }
+                }
 
-                // .login-title {
-                //     font-size: 1.8rem;
-                //     font-weight: 700;
-                //     color: white;
-                //     margin-bottom: 0.5rem;
-                //     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                // }
+                .login-title {
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    color: #111827;
+                    margin-bottom: 0.5rem;
+                }
 
-                // .brand-name {
-                //     background: linear-gradient(45deg, #f093fb, #f5576c);
-                //     -webkit-background-clip: text;
-                //     -webkit-text-fill-color: transparent;
-                //     background-clip: text;
-                // }
+                .brand-name {
+                    color: #3B82F6;
+                }
 
-                // .login-subtitle {
-                //     font-size: 1rem;
-                //     color: rgba(255, 255, 255, 0.8);
-                //     margin-bottom: 2rem;
-                //     line-height: 1.5;
-                // }
+                .login-subtitle {
+                    font-size: 1rem;
+                    color: #6B7280;
+                    margin-bottom: 2rem;
+                    line-height: 1.5;
+                }
 
-                // .highlight {
-                //     color: #f093fb;
-                //     font-weight: 600;
-                // }
+                .login-form {
+                    text-align: left;
+                    margin-bottom: 1.5rem;
+                }
 
-                // .login-form {
-                //     text-align: left;
-                //     margin-bottom: 1.5rem;
-                // }
+                .form-group {
+                    margin-bottom: 1.5rem;
+                }
 
-                // .form-group {
-                //     margin-bottom: 1.5rem;
-                // }
+                .form-group label {
+                    display: block;
+                    color: #374151;
+                    font-weight: 500;
+                    margin-bottom: 0.5rem;
+                    font-size: 0.875rem;
+                }
 
-                // .form-group label {
-                //     display: block;
-                //     color: white;
-                //     font-weight: 600;
-                //     margin-bottom: 0.5rem;
-                //     font-size: 0.9rem;
-                // }
+                .form-input {
+                    width: 100%;
+                    padding: 0.75rem;
+                    background: white;
+                    border: 1px solid #D1D5DB;
+                    border-radius: 6px;
+                    color: #111827;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
+                }
 
-                // .form-input {
-                //     width: 100%;
-                //     padding: 1rem;
-                //     background: rgba(255, 255, 255, 0.1);
-                //     border: 1px solid rgba(255, 255, 255, 0.2);
-                //     border-radius: 12px;
-                //     color: white;
-                //     font-size: 1rem;
-                //     transition: all 0.3s ease;
-                //     backdrop-filter: blur(10px);
-                // }
+                .form-input::placeholder {
+                    color: #9CA3AF;
+                }
 
-                // .form-input::placeholder {
-                //     color: rgba(255, 255, 255, 0.6);
-                // }
+                .form-input:focus {
+                    outline: none;
+                    border-color: #3B82F6;
+                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+                }
 
-                // .form-input:focus {
-                //     outline: none;
-                //     border-color: #f093fb;
-                //     background: rgba(255, 255, 255, 0.15);
-                //     box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
-                //     transform: translateY(-2px);
-                // }
+                .error-message {
+                    background: #FEF2F2;
+                    border: 1px solid #FECACA;
+                    border-radius: 6px;
+                    padding: 0.75rem;
+                    color: #DC2626;
+                    margin-bottom: 1rem;
+                    font-size: 0.875rem;
+                    text-align: center;
+                    animation: shake 0.5s ease-in-out;
+                }
 
-                // .error-message {
-                //     background: rgba(245, 87, 108, 0.15);
-                //     border: 1px solid rgba(245, 87, 108, 0.3);
-                //     border-radius: 8px;
-                //     padding: 0.75rem;
-                //     color: #f5576c;
-                //     margin-bottom: 1rem;
-                //     font-size: 0.9rem;
-                //     text-align: center;
-                //     animation: shake 0.5s ease-in-out;
-                // }
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-5px); }
+                    75% { transform: translateX(5px); }
+                }
 
-                // @keyframes shake {
-                //     0%, 100% { transform: translateX(0); }
-                //     25% { transform: translateX(-5px); }
-                //     75% { transform: translateX(5px); }
-                // }
+                .login-button {
+                    width: 100%;
+                    padding: 0.75rem;
+                    background: #3B82F6;
+                    border: none;
+                    border-radius: 6px;
+                    color: white;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                }
 
-                // .login-button {
-                //     width: 100%;
-                //     padding: 1rem;
-                //     background: linear-gradient(45deg, #f093fb, #f5576c);
-                //     border: none;
-                //     border-radius: 12px;
-                //     color: white;
-                //     font-size: 1.1rem;
-                //     font-weight: 600;
-                //     cursor: pointer;
-                //     transition: all 0.3s ease;
-                //     box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
-                //     position: relative;
-                //     overflow: hidden;
-                // }
+                .login-button:hover:not(:disabled) {
+                    background: #2563EB;
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                }
 
-                // .login-button:hover:not(:disabled) {
-                //     transform: translateY(-2px);
-                //     box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
-                // }
+                .login-button:active {
+                    transform: translateY(0);
+                }
 
-                // .login-button:active {
-                //     transform: translateY(0);
-                // }
+                .login-button:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                    background: #9CA3AF;
+                }
 
-                // .login-button:disabled {
-                //     opacity: 0.7;
-                //     cursor: not-allowed;
-                // }
+                .loading-spinner {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                }
 
-                // .loading-spinner {
-                //     display: flex;
-                //     align-items: center;
-                //     justify-content: center;
-                //     gap: 0.5rem;
-                // }
+                .spinner {
+                    width: 16px;
+                    height: 16px;
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    border-top: 2px solid white;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                }
 
-                // .spinner {
-                //     width: 16px;
-                //     height: 16px;
-                //     border: 2px solid rgba(255, 255, 255, 0.3);
-                //     border-top: 2px solid white;
-                //     border-radius: 50%;
-                //     animation: spin 1s linear infinite;
-                // }
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
 
-                // @keyframes spin {
-                //     0% { transform: rotate(0deg); }
-                //     100% { transform: rotate(360deg); }
-                // }
+                .login-footer {
+                    text-align: center;
+                    color: #6B7280;
+                    font-size: 0.875rem;
+                }
 
-                // .login-footer {
-                //     text-align: center;
-                //     color: rgba(255, 255, 255, 0.8);
-                //     font-size: 0.9rem;
-                // }
+                .link-button {
+                    background: none;
+                    border: none;
+                    color: #3B82F6;
+                    font-weight: 500;
+                    cursor: pointer;
+                    text-decoration: underline;
+                    transition: color 0.3s ease;
+                }
 
-                // .link-button {
-                //     background: none;
-                //     border: none;
-                //     color: #f093fb;
-                //     font-weight: 600;
-                //     cursor: pointer;
-                //     text-decoration: underline;
-                //     transition: color 0.3s ease;
-                // }
+                .link-button:hover {
+                    color: #2563EB;
+                }
 
-                // .link-button:hover {
-                //     color: #f5576c;
-                // }
+                @keyframes slideInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
 
-                // .floating-elements {
-                //     position: absolute;
-                //     top: 0;
-                //     left: 0;
-                //     width: 100%;
-                //     height: 100%;
-                //     pointer-events: none;
-                //     z-index: 1;
-                // }
-
-                // .floating-book {
-                //     position: absolute;
-                //     font-size: 1.5rem;
-                //     opacity: 0.4;
-                //     animation: floatRandom 8s ease-in-out infinite;
-                // }
-
-                // .floating-1 {
-                //     top: 20%;
-                //     left: 10%;
-                //     animation-delay: 0s;
-                // }
-
-                // .floating-2 {
-                //     top: 30%;
-                //     right: 15%;
-                //     animation-delay: 2s;
-                // }
-
-                // .floating-3 {
-                //     bottom: 30%;
-                //     left: 20%;
-                //     animation-delay: 4s;
-                // }
-
-                // .floating-4 {
-                //     bottom: 20%;
-                //     right: 10%;
-                //     animation-delay: 6s;
-                // }
-
-                // @keyframes floatRandom {
-                //     0%, 100% { transform: translateY(0px) rotate(0deg); }
-                //     25% { transform: translateY(-20px) rotate(5deg); }
-                //     50% { transform: translateY(-10px) rotate(-5deg); }
-                //     75% { transform: translateY(-30px) rotate(3deg); }
-                // }
-
-                // @keyframes slideInUp {
-                //     from {
-                //         opacity: 0;
-                //         transform: translateY(30px);
-                //     }
-                //     to {
-                //         opacity: 1;
-                //         transform: translateY(0);
-                //     }
-                // }
-
-                // /* Responsive Design */
-                // @media (max-width: 768px) {
-                //     .login-page {
-                //         padding: 1rem;
-                //     }
+                /* Responsive Design */
+                @media (max-width: 768px) {
+                    .login-page {
+                        padding: 1rem;
+                    }
                     
-                //     .login-card {
-                //         padding: 2rem;
-                //     }
+                    .login-card {
+                        padding: 2rem;
+                    }
                     
-                //     .login-title {
-                //         font-size: 1.5rem;
-                //     }
-                    
-                //     .floating-book {
-                //         font-size: 1.2rem;
-                //     }
-                // }
+                    .login-title {
+                        font-size: 1.5rem;
+                    }
+                }
 
-                // @media (max-width: 480px) {
-                //     .login-card {
-                //         padding: 1.5rem;
-                //     }
+                @media (max-width: 480px) {
+                    .login-card {
+                        padding: 1.5rem;
+                    }
                     
-                //     .login-title {
-                //         font-size: 1.3rem;
-                //     }
+                    .login-title {
+                        font-size: 1.3rem;
+                    }
                     
-                //     .logo {
-                //         width: 60px;
-                //         height: 60px;
-                //     }
-                // }
+                    .logo {
+                        width: 60px;
+                        height: 60px;
+                    }
+                }
             `}</style>
         </div>
     );
