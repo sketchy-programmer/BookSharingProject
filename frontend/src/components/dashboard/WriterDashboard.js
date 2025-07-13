@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   PenTool, 
   BookOpen, 
@@ -28,6 +28,82 @@ const WriterDashboard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Function to get user data from localStorage or API
+  const getUserData = async () => {
+    try {
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        // Redirect to login if no token
+        window.location.href = '/login';
+        return;
+      }
+
+      // Parse user data from token or make API call
+      const userData = JSON.parse(localStorage.getItem('user'));
+      
+      if (userData) {
+        setUser({
+          name: userData.username || userData.name || 'Unknown User',
+          email: userData.email || 'No email',
+          role: userData.role || 'Writer',
+          avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || 'User')}&background=3b82f6&color=fff`,
+          joinDate: userData.joinDate || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+          booksPublished: userData.booksPublished || 0,
+          favoriteGenres: userData.favoriteGenres || ["Fantasy", "Romance", "Mystery"]
+        });
+      } else {
+        // If no user data in localStorage, make API call to get user info
+        const response = await fetch('/api/user/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUser({
+            name: userData.username || userData.name || 'Unknown User',
+            email: userData.email || 'No email',
+            role: userData.role || 'Writer',
+            avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || 'User')}&background=3b82f6&color=fff`,
+            joinDate: userData.joinDate || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+            booksPublished: userData.booksPublished || 0,
+            favoriteGenres: userData.favoriteGenres || ["Fantasy", "Romance", "Mystery"]
+          });
+        } else {
+          // If API call fails, redirect to login
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      // Fallback to basic user data if available
+      const fallbackUser = JSON.parse(localStorage.getItem('user') || '{}');
+      setUser({
+        name: fallbackUser.username || 'Unknown User',
+        email: fallbackUser.email || 'No email',
+        role: fallbackUser.role || 'Writer',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(fallbackUser.username || 'User')}&background=3b82f6&color=fff`,
+        joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+        booksPublished: 0,
+        favoriteGenres: ["Fantasy", "Romance", "Mystery"]
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
   const handleFileChange = e => setCoverImage(e.target.files[0]);
@@ -36,29 +112,50 @@ const WriterDashboard = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      alert('Book created successfully!');
-      setForm({ title: '', summary: '', genre: '' });
-      setCoverImage(null);
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('title', form.title);
+      formData.append('summary', form.summary);
+      formData.append('genre', form.genre);
+      if (coverImage) {
+        formData.append('coverImage', coverImage);
+      }
+
+      const response = await fetch('/api/books', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        alert('Book created successfully!');
+        setForm({ title: '', summary: '', genre: '' });
+        setCoverImage(null);
+        // Refresh user data to update book count
+        getUserData();
+      } else {
+        alert('Failed to create book. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error creating book:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
 
-  // Mock user data (adjusted for writer)
-  const user = {
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    role: "Writer",
-    avatar: "/api/placeholder/40/40",
-    joinDate: "March 2023",
-    booksPublished: 12,
-    favoriteGenres: ["Fantasy", "Romance", "Mystery"]
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
   };
 
-  // Mock data for writer stats
+  // Mock data for writer stats (you can replace this with real API calls)
   const writerStats = {
-    totalBooks: 12,
+    totalBooks: user?.booksPublished || 0,
     totalViews: 15420,
     totalLikes: 892,
     avgRating: 4.6
@@ -154,21 +251,38 @@ const WriterDashboard = () => {
 
           {/* Profile Dropdown */}
           <div className="relative">
-            <button
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
-            >
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-8 h-8 rounded-full border border-gray-300"
-              />
-              <span className="hidden md:block font-medium">{user.name}</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
+            {loading ? (
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="hidden md:block w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            ) : user ? (
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full border border-gray-300"
+                  onError={(e) => {
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=3b82f6&color=fff`;
+                  }}
+                />
+                <span className="hidden md:block font-medium">{user.name}</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                onClick={() => window.location.href = '/login'}
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Login
+              </button>
+            )}
 
             {/* Profile Dropdown Menu */}
-            {isProfileOpen && (
+            {isProfileOpen && user && (
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
                 <div className="px-4 py-3 border-b border-gray-200">
                   <div className="flex items-center space-x-3">
@@ -176,6 +290,9 @@ const WriterDashboard = () => {
                       src={user.avatar}
                       alt={user.name}
                       className="w-12 h-12 rounded-full border border-gray-300"
+                      onError={(e) => {
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=3b82f6&color=fff`;
+                      }}
                     />
                     <div>
                       <p className="font-medium text-gray-900">{user.name}</p>
@@ -215,10 +332,13 @@ const WriterDashboard = () => {
                     <Settings className="w-4 h-4 mr-2" />
                     Account Settings
                   </a>
-                  <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
@@ -262,6 +382,37 @@ const WriterDashboard = () => {
     </nav>
   );
 
+  // Show loading screen while fetching user data
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login prompt if no user data
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <BookOpen className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Please Login</h2>
+          <p className="text-gray-600 mb-4">You need to be logged in to access the dashboard.</p>
+          <button
+            onClick={() => window.location.href = '/login'}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Bar */}
@@ -272,7 +423,7 @@ const WriterDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Writer Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user.name}!</h1>
               <p className="mt-1 text-sm text-gray-600">
                 Create and manage your literary masterpieces
               </p>
@@ -338,97 +489,96 @@ const WriterDashboard = () => {
                 </div>
               </div>
               
-              <div onSubmit={handleSubmit} className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                      Book Title
-                    </label>
+              <div className="p-6">
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                <div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                    Book Title
+                  </label>
+                  <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    placeholder="Enter your book title..."
+                    value={form.title}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-2">
+                    Genre
+                  </label>
+                  <input
+                    id="genre"
+                    name="genre"
+                    type="text"
+                    placeholder="Fantasy, Romance, Mystery..."
+                    value={form.genre}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="summary" className="block text-sm font-medium text-gray-700 mb-2">
+                    Book Summary
+                  </label>
+                  <textarea
+                    id="summary"
+                    name="summary"
+                    placeholder="Tell readers what your story is about..."
+                    value={form.summary}
+                    onChange={handleChange}
+                    rows="4"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="cover" className="block text-sm font-medium text-gray-700 mb-2">
+                    Cover Image
+                  </label>
+                  <div className="relative">
                     <input
-                      id="title"
-                      name="title"
-                      type="text"
-                      placeholder="Enter your book title..."
-                      value={form.title}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      id="cover"
+                      type="file"
+                      onChange={handleFileChange}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      accept="image/*"
                       required
                     />
-                  </div>
-
-                  <div>
-                    <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-2">
-                      Genre
-                    </label>
-                    <input
-                      id="genre"
-                      name="genre"
-                      type="text"
-                      placeholder="Fantasy, Romance, Mystery..."
-                      value={form.genre}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="summary" className="block text-sm font-medium text-gray-700 mb-2">
-                      Book Summary
-                    </label>
-                    <textarea
-                      id="summary"
-                      name="summary"
-                      placeholder="Tell readers what your story is about..."
-                      value={form.summary}
-                      onChange={handleChange}
-                      rows="4"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="cover" className="block text-sm font-medium text-gray-700 mb-2">
-                      Cover Image
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="cover"
-                        type="file"
-                        onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        accept="image/*"
-                        required
-                      />
-                      <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center hover:border-blue-500 transition-colors">
-                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600">
-                          {coverImage ? coverImage.name : 'Click to upload cover image'}
-                        </p>
-                      </div>
+                    <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center hover:border-blue-500 transition-colors">
+                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">
+                        {coverImage ? coverImage.name : 'Click to upload cover image'}
+                      </p>
                     </div>
                   </div>
-
-                  <button 
-                    type="button"
-                    onClick={handleSubmit}
-                    className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        Create Book
-                      </>
-                    )}
-                  </button>
                 </div>
-              </div>
+
+                <button 
+                  type="submit"
+                  className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Create Book
+                    </>
+                  )}
+                </button>
+              </form>
             </div>
+          </div>
           </div>
 
           {/* Recent Books */}
@@ -534,6 +684,6 @@ const WriterDashboard = () => {
       </div>
     </div>
   );
-};
+}
 
 export default WriterDashboard;
