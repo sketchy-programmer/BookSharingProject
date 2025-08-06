@@ -85,7 +85,7 @@ const ReaderDashboard = () => {
         name: "Unknown User",
         email: "No Email Provided",
         role: 'Reader',
-        avatar: `https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff`,
+        avatar: "https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff",
         joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric'}),
         booksRead: 0,
         favoriteGenres: ["Fantasy", "Sci-Fi", "Mystery"]
