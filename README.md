@@ -225,6 +225,6 @@ If you have any questions or need help with the project:
 
 Made with ❤️ by the Book Sharing Community
 
-[🌐 Live Demo](https://book-sharing-project-8vi5-gk8j69o4v.vercel.app/) • [📚 Documentation](https://github.com/facebook/create-react-app/blob/main/packages/cra-template/template/README.md) • [🤝 Contribute](CONTRIBUTING.md)
+[🌐 Live Demo](https://book-sharing-project-8vi5.vercel.app/) • [📚 Documentation](https://github.com/facebook/create-react-app/blob/main/packages/cra-template/template/README.md) • [🤝 Contribute](CONTRIBUTING.md)
 
 </div>
